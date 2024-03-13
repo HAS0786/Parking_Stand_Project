@@ -1,0 +1,1 @@
+g++ .\Student.cpp .\Teacher.cpp .\Guest.cpp .\testing.cpp

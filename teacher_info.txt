@@ -1,0 +1,138 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+// Function to delete a student record based on the card number
+void deleteStudentRecord(int cardNumber) {
+    std::string line;
+    std::ifstream file("data.txt");
+    std::ofstream tempFile("temp.txt");
+
+    bool found = false;
+    bool skip = false;
+
+    if (file.is_open() && tempFile.is_open()) {
+        while (std::getline(file, line)) {
+            // Check if the line contains the student card number
+            if (line.find("Student card:" + std::to_string(cardNumber)) != std::string::npos) {
+                found = true;
+                skip = true; // Start skipping lines related to this student
+            }
+
+            if (!skip) {
+                tempFile << line << std::endl; // Write the line to the temporary file
+            } else if (line.find("-----------") != std::string::npos) {
+                skip = false; // Stop skipping lines when the separator is found
+            }
+        }
+        file.close();
+        tempFile.close();
+
+        // Replace the original file with the temporary file
+        std::remove("data.txt");
+        std::rename("temp.txt", "data.txt");
+    } else {
+        std::cerr << "Unable to open file";
+    }
+
+    if (!found) {
+        std::cout << "Student card number " << cardNumber << " not found." << std::endl;
+    } else {
+        std::cout << "Student card number " << cardNumber << " has been deleted." << std::endl;
+    }
+}
+
+int main() {
+    int searchCardNumber;
+    std::cout << "Enter the student card number you are looking for: ";
+    std::cin >> searchCardNumber;
+
+    deleteStudentRecord(searchCardNumber);
+
+    return 0;
+}
+
+#include <iostream>
+#include <fstream>
+#include <string>
+
+int main() {
+    int searchCardNumber;
+    std::cout << "Enter the student card number you are looking for: ";
+    std::cin >> searchCardNumber;
+
+    std::string line;
+    std::ifstream file("data.txt");
+    std::ofstream tempFile("temp.txt");
+
+    bool found = false;
+    bool skip = false;
+
+    if (file.is_open() && tempFile.is_open()) {
+        while (std::getline(file, line)) {
+            // Check if the line contains the student card number
+            if (line.find("Student card:" + std::to_string(searchCardNumber)) != std::string::npos) {
+                found = true;
+                skip = true; // Start skipping lines related to this student
+            }
+
+            if (!skip) {
+                tempFile << line << std::endl; // Write the line to the temporary file
+            } else if (line.find("-----------") != std::string::npos) {
+                skip = false; // Stop skipping lines when the separator is found
+            }
+        }
+        file.close();
+        tempFile.close();
+
+        // Replace the original file with the temporary file
+        std::remove("data.txt");
+        std::rename("temp.txt", "data.txt");
+    } else {
+        std::cerr << "Unable to open file";
+    }
+
+    if (!found) {
+        std::cout << "Student card number " << searchCardNumber << " not found." << std::endl;
+    } else {
+        std::cout << "Student card number " << searchCardNumber << " has been deleted." << std::endl;
+    }
+
+    return 0;
+}
+#include <iostream>
+#include <fstream>
+#include <string>
+
+// Function to count the total number of records in a file
+int countTotalRecords(const std::string& filename) {
+    std::ifstream file(filename);
+    std::string line;
+    int recordCount = 0;
+    bool inRecord = false;
+
+    if (file.is_open()) {
+        while (std::getline(file, line)) {
+            // Check if the line is the start of a new record
+            if (line.find("-----------") != std::string::npos) {
+                inRecord = true;
+                recordCount++; // Increment the record count
+            }
+            // If we're in a record and encounter a separator, it's the end of the record
+            else if (inRecord && line.find("-----------") != std::string::npos) {
+                inRecord = false;
+            }
+        }
+        file.close();
+    } else {
+        std::cerr << "Unable to open file";
+    }
+
+    return recordCount;
+}
+
+int main() {
+    std::cout << "Total records in the file: " << countTotalRecords("data.txt") << std::endl;
+
+    return 0;
+}

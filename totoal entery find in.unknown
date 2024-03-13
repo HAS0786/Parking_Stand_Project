@@ -1,0 +1,36 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+// Function to count the total number of records in a file
+int countTotalRecords(const std::string& filename) {
+    std::ifstream file(filename);
+    std::string line;
+    int recordCount = 0;
+    bool inRecord = false;
+
+    if (file.is_open()) {
+        while (std::getline(file, line)) {
+            // Check if the line is the start of a new record
+            if (line.find("-----------") != std::string::npos) {
+                inRecord = true;
+                recordCount++; // Increment the record count
+            }
+            // If we're in a record and encounter a separator, it's the end of the record
+            else if (inRecord && line.find("-----------") != std::string::npos) {
+                inRecord = false;
+            }
+        }
+        file.close();
+    } else {
+        std::cerr << "Unable to open file";
+    }
+
+    return recordCount;
+}
+
+int main() {
+    std::cout << "Total records in the file: " << countTotalRecords("data.txt") << std::endl;
+
+    return 0;
+}
